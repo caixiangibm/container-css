@@ -69,7 +69,7 @@ chown -R 501:500 /CSSIndex1_OS1
 ```
 
 ## 4. Configure the SSL keystore.
-- A sample SSL keystore file [cssSelfsignedServerStore](https://github.ibm.com/ecm-container-service/css-docker/blob/master/sample/cssSelfsignedServerStore) is provided for the Content Search Services container. The certification inside the sample SSL keystore of the Content Search Services container are same as the certificaton inside the default sample keystores inside the Content Platform Engine container, to ensure SSL communication work well between these containers.
+- A sample SSL keystore file [cssSelfsignedServerStore](https://github.com/ibm-ecm/container-css/blob/master/sample/cssSelfsignedServerStore) is provided for the Content Search Services container. The certification inside the sample SSL keystore of the Content Search Services container are same as the certificaton inside the default sample keystores inside the Content Platform Engine container, to ensure SSL communication work well between these containers.
 
 Sample SSL keystore in the Content Search Services container mount path
 
@@ -80,13 +80,13 @@ Sample SSL keystores inside the Content Platform Engine container
             /opt/ibm/wlp/usr/servers/defaultServer/resources/security/keystore.jks
             /opt/ibm/wlp/usr/servers/defaultServer/resources/security/truststore.jks
 
-- Download and copy the sample SSL keystore file [cssSelfsignedServerStore](https://github.ibm.com/ecm-container-service/css-docker/blob/master/sample/cssSelfsignedServerStore) to the mount path of the CSS_Server data. When you run the Content Search Services container, it communicates with Content Platform Engine in SSL by using the sample keystore file. For example:
+- Download and copy the sample SSL keystore file [cssSelfsignedServerStore](https://github.com/ibm-ecm/container-css/blob/master/sample/cssSelfsignedServerStore) to the mount path of the CSS_Server data. When you run the Content Search Services container, it communicates with Content Platform Engine in SSL by using the sample keystore file. For example:
 
 ```
 # Put sample SSL keystore to host CSS data path
 /home/css/CSS_Server_data/cssSelfsignedServerStore
 ```
-- You can also choose to use customized certifications in the keystore file. See [this readme](https://github.ibm.com/ecm-container-service/css-docker/blob/master/Customize_SSL_cert_CPE_CSS.md) for details. 
+- You can also choose to use customized certifications in the keystore file. See [this readme](https://github.com/ibm-ecm/container-css/blob/master/Customize_SSL_cert_CPE_CSS.md) for details. 
 
 
 # Quickstart
@@ -94,8 +94,11 @@ Sample SSL keystores inside the Content Platform Engine container
 Use the following command with your own credentials.
 
 ```
-docker login -u ***** -p ****** ecm-containerization-docker-local.artifactory.swg-devops.com
-docker pull ecm-containerization-docker-local.artifactory.swg-devops.com/css:latest
+docker login -u [Docker ID] -p [Password]
+e.g.
+docker login -u mydockerid -p mydockerpw
+
+docker pull ecmcontainers/ecm_earlyadopters_css:earlyadopters-gm5.5
 ```
 ## 2. Set the environment variables (optional).
 These optional variables can be set on your Docker container. You can pass these to the container when you run the image by using additional -e FLAG=value arguments.
@@ -117,7 +120,7 @@ docker exec -d cssx1 /usr/bin/css-dynamic-change.sh 4096
 A Linux host or virtual machine with Docker engine installed is required to run this image. You can refer to the Usage section for details. The following command runs the Content Search Services container using sample values:
 
 ```
-docker run -d --name CSSX1 -p 8199:8199 --hostname=cssx1 -v /home/css/CSS_Server_data:/opt/IBM/ContentSearchServices/CSS_Server/data -v /home/css/CSS_Server_log:/opt/IBM/ContentSearchServices/CSS_Server/log -v /home/css/CSS_Server_temp:/opt/IBM/ContentSearchServices/CSS_Server/temp -v /CSSIndex1_OS1:/CSSIndex1_OS1 ecm-containerization-docker-local.artifactory.swg-devops.com/css:latest
+docker run -d --name CSSX1 -p 8199:8199 --hostname=cssx1 -v /home/css/CSS_Server_data:/opt/IBM/ContentSearchServices/CSS_Server/data -v /home/css/CSS_Server_log:/opt/IBM/ContentSearchServices/CSS_Server/log -v /home/css/CSS_Server_temp:/opt/IBM/ContentSearchServices/CSS_Server/temp -v /CSSIndex1_OS1:/CSSIndex1_OS1 ecm_earlyadopters_css:earlyadopters-gm5.5
 ```
 
 # Usage
@@ -138,16 +141,16 @@ docker run -d --name CSSX1 -p 8199:8199 --hostname=cssx1 -v /home/css/CSS_Server
 <br>Mount Content index data volume.
 
 > For example:
->> docker run -d --name CSSX1 -p 8199:8199 --hostname=cssx1 -v /home/css/CSS_Server_data:/opt/IBM/ContentSearchServices/CSS_Server/data -v /home/css/CSS_Server_log:/opt/IBM/ContentSearchServices/CSS_Server/log -v /home/css/CSS_Server_temp:/opt/IBM/ContentSearchServices/CSS_Server/temp -v /CSSIndex1_OS1:/CSSIndex1_OS1 ecm-containerization-docker-local.artifactory.swg-devops.com/css:latest
+>> docker run -d --name CSSX1 -p 8199:8199 --hostname=cssx1 -v /home/css/CSS_Server_data:/opt/IBM/ContentSearchServices/CSS_Server/data -v /home/css/CSS_Server_log:/opt/IBM/ContentSearchServices/CSS_Server/log -v /home/css/CSS_Server_temp:/opt/IBM/ContentSearchServices/CSS_Server/temp -v /CSSIndex1_OS1:/CSSIndex1_OS1 ecm_earlyadopters_css:earlyadopters-gm5.5
 
 ## Run with monitoring enabled.
 You can also choose to start the Content Search Service container with monitoring enabled by using a different Docker run command line. With monitoring enabled, you can monitor container resource and logs with monitoring server
 
-For monitoring environment variables, please check [ECM Monitoring Github](https://github.ibm.com/ecm-container-service/ecm-container-monitoring#environment-variables).
+For monitoring environment variables, please check [ECM Monitoring Github](https://github.com/ibm-ecm/container-monitoring#environment-variables).
 
 Run Content Search Service container with Bluemix monitoring
 > For example:
->> docker run -d --name CSSX1 -p 8199:8199 -e MON_METRICS_WRITER_OPTION=2 -e MON_METRICS_SERVICE_ENDPOINT=metrics.ng.bluemix.net:9095 -e MON_BMX_GROUP=com.ibm.ecm.monitor. -e MON_BMX_METRICS_SCOPE_ID={space or organization guid} -e MON_BMX_API_KEY={IAM API key} -e MON_LOG_SHIPPER_OPTION=2 -e MON_BMX_SPACE_ID={tenant id} -e MON_LOG_SERVICE_ENDPOINT=logs.opvis.bluemix.net:9091 -e MON_BMX_LOGS_LOGGING_TOKEN={log logging token} --hostname=cssx1 -v /home/css/CSS_Server_data:/opt/IBM/ContentSearchServices/CSS_Server/data -v /home/css/CSS_Server_log:/opt/IBM/ContentSearchServices/CSS_Server/log -v /home/css/CSS_Server_temp:/opt/IBM/ContentSearchServices/CSS_Server/temp -v /CSSIndex1_OS1:/CSSIndex1_OS1 ecm-containerization-docker-local.artifactory.swg-devops.com/css:latest  
+>> docker run -d --name CSSX1 -p 8199:8199 -e MON_METRICS_WRITER_OPTION=2 -e MON_METRICS_SERVICE_ENDPOINT=metrics.ng.bluemix.net:9095 -e MON_BMX_GROUP=com.ibm.ecm.monitor. -e MON_BMX_METRICS_SCOPE_ID={space or organization guid} -e MON_BMX_API_KEY={IAM API key} -e MON_LOG_SHIPPER_OPTION=2 -e MON_BMX_SPACE_ID={tenant id} -e MON_LOG_SERVICE_ENDPOINT=logs.opvis.bluemix.net:9091 -e MON_BMX_LOGS_LOGGING_TOKEN={log logging token} --hostname=cssx1 -v /home/css/CSS_Server_data:/opt/IBM/ContentSearchServices/CSS_Server/data -v /home/css/CSS_Server_log:/opt/IBM/ContentSearchServices/CSS_Server/log -v /home/css/CSS_Server_temp:/opt/IBM/ContentSearchServices/CSS_Server/temp -v /CSSIndex1_OS1:/CSSIndex1_OS1 ecm_earlyadopters_css:earlyadopters-gm5.5  
 
 ## Configuring on Content Platform Engine for Content Search Services
 - Get Content Search Service authentication token
@@ -200,7 +203,7 @@ The authentication token is used to communicate with the CPE server. Record this
 
 Refer to [kubernetes document](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) for information on persistence volume preparation.
 
-2. Create a persistence volume claim ([sample YAML file for create PVC](https://github.ibm.com/ecm-container-service/navigator-docker/tree/master/examples/ecmcfgstore.yml)):
+2. Create a persistence volume claim ([sample YAML file for create PVC](https://github.com/ibm-ecm/container-css/blob/master/sample/css-deploy.yaml)):
 
 ```
 kubectl apply ecmcfgstore.yml
@@ -241,9 +244,9 @@ kubectl describe pv <PV_NAME>
     
 ```
 
-- Copy the sample SSL keystore file [cssSelfsignedServerStore](https://github.ibm.com/ecm-container-service/css-docker/blob/master/sample/cssSelfsignedServerStore) or customized keystore file to /cfgstore/css/css_server_data
+- Copy the sample SSL keystore file [cssSelfsignedServerStore](https://github.com/ibm-ecm/container-css/blob/master/sample/cssSelfsignedServerStore) or customized keystore file to /cfgstore/css/css_server_data
 
-4. Deploy IBM Content Search Services ([sample YAML file](https://github.ibm.com/ecm-container-service/css-docker/tree/master/sample/css-deploy.yaml)).
+4. Deploy IBM Content Search Services ([sample YAML file](https://github.com/ibm-ecm/container-css/blob/master/sample/css-deploy.yaml)).
 
 ```
 kubectl create -f css-deploy.yaml
